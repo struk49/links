@@ -1,15 +1,47 @@
-var xhr = new XMLHttpRequest();
-var data;
+const baseUrl = "https://ci-swapi.herokuapp.com/api/"
 
-xhr.open("GET", "https://ci-swapi.herokuapp.com/api/");
-xhr.send();
+function getData(type, cb) {
+    var xhr = new XMLHttpRequest();
 
-xhr.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-        data = JSON.parse(this.responseText);
+    xhr.open("GET",baseUrl + type + '/');
+    xhr.send();const baseURL = "https://ci-swapi.herokuapp.com/api/";
+
+    function getData(type, cb) {
+        var xhr = new XMLHttpRequest();
+    
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                cb(JSON.parse(this.responseText));
+            }
+        };
+    
+        xhr.open("GET", baseURL + type + "/");
+        xhr.send();
+    }
+    
+    function writeToDocument(type) {
+        getData(type, function(data) {
+           
+            document.getElementById("data").innerHTML = data;
+        });
+    }
+
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            cb(JSON.parse(this.responseText));
+        }
     };
 }
 
-setTimeout(function() {
-    console.log(data);
-}, 500);
+function writeToDocument(type) {
+    var el = document.getElementById('data');
+    el.innerHTML = '';
+    getData(type, function(data,){
+        data = data.results
+
+        data.forEach(function(item){
+           el.innerHTML +=  "<p>" + item.name + "</p>";
+        })
+        
+    })
+}
